@@ -11,6 +11,8 @@
 - **지갑 없이 살펴보기.** 주문 생성, 온체인 확정, 서명 웹훅, 이용권 지급의 흐름과 실제 Base Sepolia 송금 영수증을 확인하세요. [공식 Next.js 빠른 시작](https://0to1pay.com/docs?lang=ko#nextjs-quickstart) · [연동 가이드](https://0to1pay.com/guides/nextjs-base-usdc?lang=ko#completed-order) · [공개 송금 영수증](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5)
 - **내 지갑으로 결제하기.** 같은 코드를 실행 중인 데모에서 테스트 USDC를 보내고 회원 콘텐츠를 열 수 있습니다. [체크아웃 체험](https://0to1pay.com/demo/base-usdc?lang=ko)
 
+코딩 도우미와 연동할 때는 결제 경로를 고르고 웹훅 재전달 후 이용권 한 개를 확인하는 [선택형 연동 지침](skills/0to1pay-access-pass/SKILL.md)을 참고하세요.
+
 ## 내 서비스에서 실행하기
 
 Node.js 22.20 이상, 쓰기 가능한 PostgreSQL, 웹훅 원문을 전달할 공개 HTTPS 주소, 실행 상태를 유지할 워커가 필요합니다. 구매자 지갑에는 0.01 테스트 USDC와 가스용 Base Sepolia ETH를 준비하세요. 체인 ID는 `84532`, USDC 컨트랙트 주소는 `0x036CbD53842c5426634e7929541eC2318f3dCF7e`입니다.

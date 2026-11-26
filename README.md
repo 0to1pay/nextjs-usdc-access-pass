@@ -15,6 +15,8 @@ This starter is for apps whose buyers already use a crypto wallet. The hosted be
 - **Explore without a wallet.** See how an order, a confirmed transfer, a signed webhook and an entitlement fit together. The linked receipt shows the on-chain transfer. [Official Next.js Quickstart](https://0to1pay.com/docs?lang=en#nextjs-quickstart) · [Integration guide](https://0to1pay.com/guides/nextjs-base-usdc?lang=en#completed-order) · [Public transfer receipt](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5)
 - **Try your own wallet.** Open the hosted checkout, pay with test USDC and open the members’ page. The public demo runs this example. [Try checkout](https://0to1pay.com/demo/base-usdc?lang=en)
 
+For a coding assistant, the [optional integration instructions](skills/0to1pay-access-pass/SKILL.md) cover both checkout paths and how to verify one grant after webhook redelivery.
+
 ## Run your own checkout
 
 You need Node.js 22.20 or later, a writable PostgreSQL database, a public HTTPS endpoint that forwards the raw webhook request, and a separate worker process. The buyer needs a Base Sepolia wallet with 0.01 test USDC and test ETH for gas. The example uses chain ID `84532` and USDC contract `0x036CbD53842c5426634e7929541eC2318f3dCF7e`.
