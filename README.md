@@ -1,6 +1,8 @@
 # Sell access passes in Next.js with USDC
 
-[한국어](README.ko.md)
+이 Next.js 예제에서 이용권 결제를 직접 시험하려면 Base Sepolia 지갑에 0.01 테스트 USDC와 가스용 테스트 ETH가 필요합니다. 체인에서 송금이 확인되면 가맹점 앱이 서명된 웹훅을 받고, 워커가 주문당 이용권 한 개를 지급합니다. 테스트넷 전용이어서 실제 판매 대금은 받을 수 없습니다.
+
+[지갑 없이 완료된 주문의 송금 영수증 보기](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5) · [결제 방식 비교](https://0to1pay.com/guides/nextjs-access-pass-payments?lang=ko) · [한국어 설치 가이드](README.ko.md#내-서비스에서-실행하기)
 
 Add paid access to a Next.js app. This testnet checkout lets a reader pay **0.01 test USDC on Base Sepolia** to unlock a members’ page. The Next.js server creates the order and quote. After 0to1pay confirms the transfer, a signed webhook arrives at your app and a worker grants the pass. Reloading the page or redelivering that webhook leaves the original purchase with one pass.
 
