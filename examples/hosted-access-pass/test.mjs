@@ -39,9 +39,9 @@ function event(command) {
 // Only the remote claim and result endpoints are simulated. The worker, inbox and transactions use the installed SDK.
 function platform() {
   const reports = new Map();
-  const claims = [];
+  const claims = [], reportCalls = [];
   return {
-    reports, claims,
+    reports, claims, reportCalls,
     async claimFulfillment(id, body, key) {
       assert.equal(key, 'claim:' + body.execution_id);
       claims.push(id);
@@ -54,6 +54,7 @@ function platform() {
     },
     async reportFulfillmentResult(id, body, key) {
       assert.equal(key, 'result:' + body.execution_id);
+      reportCalls.push(id);
       if (!reports.has(id)) reports.set(id, { command_id: id, result_id: randomUUID(), ...body });
       const receipt = reports.get(id);
       assert.equal(receipt.execution_id, body.execution_id);
@@ -101,10 +102,10 @@ test('hosted access uses signed commands and the merchant-authenticated wallet',
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
   t.after(() => new Promise(resolve => server.close(resolve)));
-  async function send(message, signingKey = secret) {
+  async function post(message, signingKey = secret, deliveryId = randomUUID(), signedAt = Math.floor(Date.now() / 1000)) {
     const body = Buffer.from(canonicalJson(message));
-    const headers = signWebhook(body, message.event_id, randomUUID(), Math.floor(Date.now()/1000), keyId, signingKey);
-    return (await fetch('http://127.0.0.1:' + server.address().port + '/events', { method:'POST', headers, body })).status;
+    const headers = signWebhook(body, message.event_id, deliveryId, signedAt, keyId, signingKey);
+    return fetch('http://127.0.0.1:' + server.address().port + '/events', { method:'POST', headers, body });
   }
   const purchase = grant(), original = event(purchase);
   const supplied = new URLSearchParams({
@@ -118,35 +119,50 @@ test('hosted access uses signed commands and the merchant-authenticated wallet',
   }
 
   await t.test('reject signed out-of-scope inputs and unauthenticated or unrelated wallets', async () => {
-    assert.equal(await send(original, randomBytes(32)), 401);
-    assert.equal(await send({ ...original, project_id: randomUUID() }), 403);
-    assert.equal(await send(event(grant({ project_id: randomUUID() }))), 403);
+    assert.equal((await post(original, randomBytes(32))).status, 401);
+    assert.equal((await post({ ...original, project_id: randomUUID() })).status, 403);
+    assert.equal((await post(event(grant({ project_id: randomUUID() })))).status, 403);
     for (const change of [
       { action: 'grant_plan' }, { action_ref: 'other-pass' },
       { payload: { link_id: randomUUID(), product_ref: productRef } },
       { payload: { link_id: linkId, product_ref: 'other-pass' } },
       { target_ref: 'wallet:eip155:1:' + buyer }, { target_ref: buyer },
       { target_ref: 'wallet:' + network + ':not-an-address' },
-    ]) assert.equal(await send(event(grant(change))), 422);
+    ]) assert.equal((await post(event(grant(change)))).status, 422);
     assert.equal(await rowCount('merchant_commands'), 0);
     assert.equal((await access()).status, 401);
     assert.equal((await access(buyerSession)).status, 403);
   });
 
-  await t.test('concurrent signed delivery and replay grant one pass; a fresh worker completes the result', async () => {
-    assert.deepEqual(await Promise.all([send(original), send(original)]), [200, 200]);
-    assert.equal(await rowCount('merchant_event_inbox'), 1);
-    assert.equal(await rowCount('merchant_commands'), 1);
-    assert.equal(await service.worker.processCommand(), true);
+  await t.test('a restarted worker delivers the result; replaying the signed event keeps the same pass', async () => {
+    const firstTimestamp = Math.floor(Date.now() / 1000) - 1;
+    const first = await post(original, secret, randomUUID(), firstTimestamp);
+    assert.equal(first.status, 200);
+    assert.equal((await first.json()).duplicate, false);
+    const secondWorker = createHostedPass({ ...config, pool }).worker;
+    const leases = await Promise.all([service.worker.processCommand(), secondWorker.processCommand()]);
+    assert.deepEqual(leases.sort(), [false, true]);
     assert.equal(await rowCount('hosted_access_grants'), 1);
     assert.equal(client.reports.size, 0);
     await pool.end();
     pool = openPool();
     service = createHostedPass({ ...config, pool });
     assert.equal(await service.worker.deliverResult(), true);
-    assert.equal(client.reports.get(purchase.command_id).result, 'applied');
+    const receipt = client.reports.get(purchase.command_id);
+    assert.equal(receipt.result, 'applied');
+
+    // The platform signs the same immutable event body for a new delivery attempt.
+    const redelivery = await post(original);
+    assert.equal(redelivery.status, 200);
+    assert.equal((await redelivery.json()).duplicate, true);
     assert.deepEqual(await service.worker.tick(), { command:false, receipt:false });
     assert.deepEqual(client.claims, [purchase.command_id]);
+    assert.deepEqual(client.reportCalls, [purchase.command_id]);
+    assert.equal(await rowCount('merchant_event_inbox'), 1);
+    assert.equal(await rowCount('merchant_commands'), 1);
+    assert.equal(await rowCount('hosted_access_grants'), 1);
+    const outbox = await pool.query('SELECT delivery_state,platform_receipt_id FROM merchant_result_outbox');
+    assert.deepEqual(outbox.rows, [{ delivery_state:'delivered', platform_receipt_id:receipt.result_id }]);
     const allowed = await access(buyerSession);
     assert.equal(allowed.status, 200);
     const data = await allowed.json();
@@ -162,7 +178,7 @@ test('hosted access uses signed commands and the merchant-authenticated wallet',
     // Hosted checkout has no automatic refund/revoke policy. These fixtures exercise explicit versioned commands.
     async function advance(kind, version, changes = {}) {
       const command = grant({ ...purchase, command_id:randomUUID(), decision_id:randomUUID(), kind, desired_version:version, ...changes });
-      assert.equal(await send(event(command)), 200);
+      assert.equal((await post(event(command))).status, 200);
       assert.deepEqual(await service.worker.tick(), { command:true, receipt:true });
       return client.reports.get(command.command_id).result;
     }
