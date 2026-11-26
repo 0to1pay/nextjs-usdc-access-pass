@@ -127,7 +127,7 @@ test('hosted access uses signed commands and the merchant-authenticated wallet',
       { payload: { link_id: randomUUID(), product_ref: productRef } },
       { payload: { link_id: linkId, product_ref: 'other-pass' } },
       { target_ref: 'wallet:eip155:1:' + buyer }, { target_ref: buyer },
-      { target_ref: 'wallet:' + network + ':not-an-address' },
+      { target_ref: 'wallet:' + network + ':not-an-address' }, { target_ref: 'wallet:' + network + ':0x' + '0'.repeat(40) },
     ]) assert.equal((await post(event(grant(change)))).status, 422);
     assert.equal(await rowCount('merchant_commands'), 0);
     assert.equal((await access()).status, 401);

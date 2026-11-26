@@ -2,6 +2,7 @@ import { DeliveryError, FulfillmentInbox, FulfillmentWorker, migrateFulfillmentI
 
 const network = 'eip155:84532';
 const targetPattern = /^wallet:eip155:84532:(0x[0-9a-f]{40})$/;
+const zeroAddress = '0x' + '0'.repeat(40);
 const uuid = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i;
 const maxBodyBytes = 1024 * 1024;
 const readHeaders = { 'Cache-Control': 'private, no-store' };
@@ -54,7 +55,8 @@ export function createHostedPass({pool, client, scope, keyId, secret, linkId, pr
         command.action !== 'grant_access' || command.action_ref !== productRef ||
         command.payload?.product_ref !== productRef || command.payload.link_id !== linkId ||
         Object.keys(command.payload).length !== 2 || !uuid.test(command.order_ref)) return null;
-    return targetPattern.exec(command.target_ref)?.[1] ?? null;
+    const address = targetPattern.exec(command.target_ref)?.[1];
+    return address && address !== zeroAddress ? address : null;
   }
 
   async function apply(tx, command) {
@@ -98,7 +100,7 @@ export function createHostedPass({pool, client, scope, keyId, secret, linkId, pr
     if (request.method !== 'GET') return new Response(null, {status:405, headers:{...readHeaders, Allow:'GET'}});
     const wallet = await getVerifiedWallet(request);
     if (!wallet) return new Response(null, {status:401, headers:readHeaders});
-    if (wallet.network_id !== network || typeof wallet.address !== 'string' || !/^0x[0-9a-f]{40}$/i.test(wallet.address)) {
+    if (wallet.network_id !== network || typeof wallet.address !== 'string' || !/^0x[0-9a-f]{40}$/i.test(wallet.address) || wallet.address.toLowerCase() === zeroAddress) {
       return new Response(null, {status:403, headers:readHeaders});
     }
     const result = await pool.query(`SELECT 1 FROM hosted_access_grants

@@ -2,7 +2,7 @@
 
 [한국어](README.ko.md)
 
-Connect a fixed-price hosted payment link to a Next.js app that already authenticates its members. A signed webhook records the pass for the paying wallet. Your existing server can then protect a page or download by looking up the wallet verified for the current member. This example accepts Base Sepolia test USDC purchases. No real funds are collected.
+Connect a fixed-price hosted payment link to a Next.js app that already authenticates its members. The webhook receives a signed command, then the merchant worker records the pass for the paying wallet. Your existing server can then protect a page or download by looking up the wallet verified for the current member. This example accepts Base Sepolia test USDC purchases. No real funds are collected.
 
 ### Set up the merchant worker
 
