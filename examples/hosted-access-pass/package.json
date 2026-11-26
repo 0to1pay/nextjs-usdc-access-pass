@@ -1,0 +1,16 @@
+{
+  "name": "hosted-access-pass-reference",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.20.0" },
+  "scripts": {
+    "migrate": "node --env-file=.env service.mjs migrate",
+    "worker": "node --env-file=.env service.mjs worker",
+    "test": "node --test test.mjs"
+  },
+  "dependencies": {
+    "@0to1pay/fulfillment-sdk": "3.1.7",
+    "@0to1pay/server-sdk": "3.1.7",
+    "pg": "8.23.1"
+  }
+}
