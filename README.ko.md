@@ -6,7 +6,7 @@
 
 구매자가 이미 코인 지갑을 사용하는 서비스에서 결제 흐름을 시험할 수 있습니다. 현재 공개 베타에서는 테스트 토큰만 사용해 실제 판매 대금은 받을 수 없습니다. 해외 판매에 필요한 카드 결제, 판매 대행, 지갑 결제 방식은 별도 가이드에서 비교할 수 있습니다. [Next.js 해외 이용권 판매 방식 비교](https://0to1pay.com/guides/nextjs-access-pass-payments?lang=ko)
 
-**내 앱에 구매 버튼만 붙이려면** 대시보드에서 상품 링크를 만들어 버튼에 연결하세요. 이 경로에서는 가맹점이 웹훅 서명을 검증한 뒤 `grant_access` 요청에 따라 결제한 지갑에 주문당 이용권 하나를 기록합니다. 회원 계정에서 이용권을 열 때는 지갑 소유를 확인하세요. 아래 Next.js 예제는 주문과 견적을 직접 만들고 자체 `grant_plan` 워커로 지급합니다. [호스팅 테스트 결제 링크 만들기](https://0to1pay.com/guides/hosted-payment-links?lang=ko)
+**내 앱에 구매 버튼만 붙이려면** 대시보드에서 상품 링크를 만들어 버튼에 연결하세요. 이 경로에서는 가맹점이 웹훅 서명을 검증한 뒤 `grant_access` 요청에 따라 결제한 지갑에 주문당 이용권 하나를 기록합니다. 회원 계정에서 이용권을 열 때는 지갑 소유를 확인하세요. 아래 Next.js 예제는 주문과 견적을 직접 만들고 자체 `grant_plan` 워커로 지급합니다. [호스팅 테스트 결제 링크 만들기](https://0to1pay.com/guides/hosted-payment-links?lang=ko) · [가맹점의 결제·이용권 검증 기록](docs/hosted-payment-link-receipt.md)
 
 - **지갑 없이 살펴보기.** 주문 생성, 온체인 확정, 서명 웹훅, 이용권 지급의 흐름과 실제 Base Sepolia 송금 영수증을 확인하세요. [공식 Next.js 빠른 시작](https://0to1pay.com/docs?lang=ko#nextjs-quickstart) · [연동 가이드](https://0to1pay.com/guides/nextjs-base-usdc?lang=ko#completed-order) · [공개 송금 영수증](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5)
 - **내 지갑으로 결제하기.** 같은 코드를 실행 중인 데모에서 테스트 USDC를 보내고 회원 콘텐츠를 열 수 있습니다. [체크아웃 체험](https://0to1pay.com/demo/base-usdc?lang=ko)

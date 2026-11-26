@@ -4,13 +4,13 @@
 
 [지갑 없이 완료된 주문의 송금 영수증 보기](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5) · [결제 방식 비교](https://0to1pay.com/guides/nextjs-access-pass-payments?lang=ko) · [한국어 설치 가이드](README.ko.md#내-서비스에서-실행하기)
 
-테스트 결제 화면을 0to1pay에 맡기려면 대시보드에서 만든 상품 링크를 구매 버튼에 연결하세요. 이 예제에서는 Next.js 앱이 주문과 견적을 직접 만듭니다. [호스팅 결제 링크 가이드](https://0to1pay.com/guides/hosted-payment-links?lang=ko)
+테스트 결제 화면을 0to1pay에 맡기려면 대시보드에서 만든 상품 링크를 구매 버튼에 연결하세요. 이 예제에서는 Next.js 앱이 주문과 견적을 직접 만듭니다. [호스팅 결제 링크 가이드](https://0to1pay.com/guides/hosted-payment-links?lang=ko) · [가맹점의 결제·이용권 검증 기록](docs/hosted-payment-link-receipt.md)
 
 Add paid access to a Next.js app. This testnet checkout lets a reader pay **0.01 test USDC on Base Sepolia** to unlock a members’ page. The Next.js server creates the order and quote. After 0to1pay confirms the transfer, a signed webhook arrives at your app and a worker grants the pass. Reloading the page or redelivering that webhook leaves the original purchase with one pass.
 
 This starter is for apps whose buyers already use a crypto wallet. The hosted beta uses test tokens and collects no real sales revenue. If you are choosing how to charge international customers, the payment guide compares wallet checkout with cards and merchant-of-record services. [Compare payment options for a Next.js access pass](https://0to1pay.com/guides/nextjs-access-pass-payments?lang=en)
 
-**Want a hosted buy button?** Create a product link in the merchant dashboard and paste it into your app. On this path your webhook handler verifies the webhook signature, handles the `grant_access` action and stores one grant per order for the paying wallet. Verify wallet ownership before unlocking a user account. This starter’s custom checkout uses its own `grant_plan` worker. [Create a hosted test payment link](https://0to1pay.com/guides/hosted-payment-links?lang=en)
+**Want a hosted buy button?** Create a product link in the merchant dashboard and paste it into your app. On this path your webhook handler verifies the webhook signature, handles the `grant_access` action and stores one grant per order for the paying wallet. Verify wallet ownership before unlocking a user account. This starter’s custom checkout uses its own `grant_plan` worker. [Create a hosted test payment link](https://0to1pay.com/guides/hosted-payment-links?lang=en) · [Test merchant’s purchase and fulfillment receipt](docs/hosted-payment-link-receipt.md)
 
 - **Explore without a wallet.** See how an order, a confirmed transfer, a signed webhook and an entitlement fit together. The linked receipt shows the on-chain transfer. [Official Next.js Quickstart](https://0to1pay.com/docs?lang=en#nextjs-quickstart) · [Integration guide](https://0to1pay.com/guides/nextjs-base-usdc?lang=en#completed-order) · [Public transfer receipt](https://base-sepolia.blockscout.com/tx/0xc68f0de5336ad234485529d939a4ac68242e00aaa013061c59189118df4500f5)
 - **Try your own wallet.** Open the hosted checkout, pay with test USDC and open the members’ page. The public demo runs this example. [Try checkout](https://0to1pay.com/demo/base-usdc?lang=en)
