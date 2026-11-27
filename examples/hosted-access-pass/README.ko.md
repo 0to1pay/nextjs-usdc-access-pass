@@ -7,7 +7,7 @@
 ### 가맹점 워커 준비
 
 1. Node.js 22.20 이상과 PostgreSQL을 준비합니다. 기존 PostgreSQL 서버에 이 워커 전용 DB나 스키마를 만드세요. SDK 워커는 같은 스키마의 수신함에서 명령을 꺼내므로 이 예제에는 테스트 프로젝트 하나, 결제 링크 하나, 상품 코드 하나를 연결합니다. 다른 링크나 루트 데모의 워커에는 다른 스키마를 사용하세요.
-2. [테스트 대시보드](https://pay.0to1pay.com/merchant?lang=ko#payment-links)에서 Base Sepolia 상품 수취 주소와 `fulfillment.requested`를 받을 전용 HTTPS 웹훅을 준비합니다. 같은 웹훅을 선택해 고정 가격 링크를 발급하세요. 구매 버튼 연결과 지갑 복구는 [결제 링크 가이드](https://0to1pay.com/guides/hosted-payment-links?lang=ko)에 있습니다.
+2. [테스트 대시보드](https://0to1pay.com/merchant?lang=ko#payment-links)에서 Base Sepolia 상품 수취 주소와 `fulfillment.requested`를 받을 전용 HTTPS 웹훅을 준비합니다. 같은 웹훅을 선택해 고정 가격 링크를 발급하세요. 구매 버튼 연결과 지갑 복구는 [결제 링크 가이드](https://0to1pay.com/guides/hosted-payment-links?lang=ko)에 있습니다.
 3. 이 폴더에서 `npm ci`와 `cp .env.example .env`를 실행합니다. DB 주소, 가맹점 ID·프로젝트 ID와 `fulfillment:execute`, `fulfillment:results` 권한의 프로젝트 테스트 API 키를 입력하세요. 웹훅의 서명 키 ID와 base64url 서명 비밀은 각각 `WEBHOOK_KEY_ID`, `WEBHOOK_SECRET`에 넣습니다. `HOSTED_LINK_ID`에는 발급된 링크의 UUID를, `HOSTED_PRODUCT_REF`에는 대시보드의 상품 코드를 그대로 입력하세요. 이 값들은 서버 환경에 보관합니다.
 4. `npm run migrate` 후 `npm run worker`를 시작합니다. 워커를 계속 실행해야 지급과 결과 보고가 진행됩니다. 구매 버튼에는 대시보드의 공개 구매 URL을 넣으세요.
 

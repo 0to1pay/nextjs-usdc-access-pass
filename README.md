@@ -21,7 +21,7 @@ For a coding assistant, the [optional integration instructions](skills/0to1pay-a
 
 You need Node.js 22.20 or later, a writable PostgreSQL database, a public HTTPS endpoint that forwards the raw webhook request, and a separate worker process. The buyer needs a Base Sepolia wallet with 0.01 test USDC and test ETH for gas. The example uses chain ID `84532` and USDC contract `0x036CbD53842c5426634e7929541eC2318f3dCF7e`.
 
-1. Create a project in the dashboard. Copy the merchant ID and project ID and issue a **test server API key**. [Merchant dashboard](https://pay.0to1pay.com/merchant?lang=en)
+1. Create a project in the dashboard. Copy the merchant ID and project ID and issue a **test server API key**. [Merchant dashboard](https://0to1pay.com/merchant?lang=en)
 
 2. In the starter directory, install the locked dependencies and create your local configuration.
 
